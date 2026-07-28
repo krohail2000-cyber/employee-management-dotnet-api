@@ -134,3 +134,18 @@ Use user-secrets during development and environment variables or a secret manage
 dotnet build EmployeeManagement.slnx
 dotnet list EmployeeManagement.Api package --vulnerable --include-transitive
 ```
+
+## Deploy on Render with Aiven MySQL
+
+The repository includes a multi-stage `Dockerfile` and a Render Blueprint.
+
+1. Create an Aiven Free MySQL service and copy its service URI.
+2. In Render, choose **New > Blueprint** and connect this GitHub repository.
+3. Configure the prompted environment variables:
+   - `ConnectionStrings__DefaultConnection`: convert the Aiven URI to a Connector/NET string, for example `Server=HOST;Port=PORT;Database=defaultdb;User=USER;Password=PASSWORD;SslMode=Required;`
+   - `SeedUsers__AdminPassword`: a strong password with uppercase, lowercase, number, and symbol.
+   - `SeedUsers__UserPassword`: another strong password.
+4. Render generates `Jwt__Secret` automatically and deploys the Docker image.
+5. Open `/health` to verify the service and `/scalar/v1` to test the API.
+
+Render supplies the `PORT` environment variable automatically. The API binds to that port in cloud environments while retaining the local launch-profile ports.

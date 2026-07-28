@@ -12,6 +12,11 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
 var jwtSecret = builder.Configuration["Jwt:Secret"]
@@ -56,18 +61,14 @@ builder.Services.AddSingleton<TokenService>();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(options => options.WithTitle("Employee Management API"));
-}
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+app.MapOpenApi();
+app.MapScalarApiReference(options => options.WithTitle("Employee Management API"));
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/scalar/v1"))
+    .AllowAnonymous()
+    .ExcludeFromDescription();
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
     .AllowAnonymous()
     .ExcludeFromDescription();
 app.MapControllers();
