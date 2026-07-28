@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.git/
+.github/
+.vs/
+.env
+*.user
+*.suo
+api-smoke.*.log

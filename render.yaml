@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: employee-management-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Jwt__Secret
+        generateValue: true
+      - key: SeedUsers__AdminPassword
+        sync: false
+      - key: SeedUsers__UserPassword
+        sync: false
