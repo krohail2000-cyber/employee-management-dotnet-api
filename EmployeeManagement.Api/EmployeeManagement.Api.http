@@ -1,0 +1,15 @@
+@host = http://localhost:5068
+@token = paste-token-here
+
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@employeeapi.com",
+  "password": "Admin@12345"
+}
+
+###
+
+GET {{host}}/api/employees?page=1&pageSize=10
+Authorization: Bearer {{token}}
