@@ -1,6 +1,15 @@
 # Employee Management System API
 
-A controller-based ASP.NET Core Web API for managing employees and departments with ASP.NET Core Identity, JWT authentication, role-based authorization, and XAMPP MySQL/MariaDB.
+A controller-based ASP.NET Core Web API for managing employees and departments with ASP.NET Core Identity, JWT authentication, role-based authorization, and MySQL/MariaDB.
+
+## Live API
+
+- **Scalar API UI:** [https://employee-management-api-kfpo.onrender.com/scalar/v1](https://employee-management-api-kfpo.onrender.com/scalar/v1)
+- **Health check:** [https://employee-management-api-kfpo.onrender.com/health](https://employee-management-api-kfpo.onrender.com/health)
+- **Base URL:** `https://employee-management-api-kfpo.onrender.com`
+- **OpenAPI document:** [https://employee-management-api-kfpo.onrender.com/openapi/v1.json](https://employee-management-api-kfpo.onrender.com/openapi/v1.json)
+
+The API runs on Render's free tier, so the first request after inactivity can take a short time while the service wakes up.
 
 ## Features
 
@@ -16,7 +25,7 @@ A controller-based ASP.NET Core Web API for managing employees and departments w
 ## Requirements
 
 - .NET 10 SDK
-- XAMPP with its MySQL/MariaDB service running
+- MySQL or MariaDB server (XAMPP, standalone, or hosted)
 - Optional: Visual Studio 2026 with **ASP.NET and web development**
 
 ## Quick start
@@ -30,21 +39,21 @@ dotnet user-secrets set "Jwt:Secret" "replace-with-a-random-secret-at-least-32-b
 dotnet run --project EmployeeManagement.Api
 ```
 
-Start **MySQL** from the XAMPP Control Panel before running the API. Apache is not required because the API connects directly to the database on port `3306`.
+Start your MySQL/MariaDB service before running the API. Apache is not required because the API connects directly to the database server.
 
-The default connection matches a standard passwordless XAMPP installation:
+The default connection matches a standard local passwordless installation:
 
 ```text
 Server=localhost;Port=3306;Database=EmployeeManagementDb;User=root;Password=;
 ```
 
-If your XAMPP `root` user has a password, configure it without editing committed settings:
+If your local `root` user has a password or uses another port, configure it without editing committed settings:
 
 ```powershell
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=EmployeeManagementDb;User=root;Password=YOUR_PASSWORD;" --project EmployeeManagement.Api
 ```
 
-Scalar opens at `https://localhost:7168/scalar/v1` when using the HTTPS launch profile. The OpenAPI document is available at `/openapi/v1.json` in Development.
+Scalar opens at `https://localhost:7168/scalar/v1` when using the HTTPS launch profile. The OpenAPI document is available at `/openapi/v1.json`.
 
 ## Demo accounts
 
@@ -53,7 +62,7 @@ Scalar opens at `https://localhost:7168/scalar/v1` when using the HTTPS launch p
 | Admin | `admin@employeeapi.com` | `Admin@12345` |
 | User | `user@employeeapi.com` | `User@12345` |
 
-These credentials are for local demonstration only. Override `SeedUsers:AdminPassword` and `SeedUsers:UserPassword` outside Development for any shared environment. The JWT secret is intentionally absent from the repository.
+These credentials are used by the live demo when its Render seed-password variables match the values above. Override `SeedUsers:AdminPassword` and `SeedUsers:UserPassword` for any non-demo environment. The JWT secret and database credentials are intentionally absent from the repository.
 
 ## Authentication
 
@@ -137,7 +146,7 @@ dotnet list EmployeeManagement.Api package --vulnerable --include-transitive
 
 ## Deploy on Render with Aiven MySQL
 
-The repository includes a multi-stage `Dockerfile` and a Render Blueprint.
+The live deployment uses the included multi-stage `Dockerfile` and Render Blueprint with Aiven MySQL.
 
 1. Create an Aiven Free MySQL service and copy its service URI.
 2. In Render, choose **New > Blueprint** and connect this GitHub repository.
@@ -146,6 +155,6 @@ The repository includes a multi-stage `Dockerfile` and a Render Blueprint.
    - `SeedUsers__AdminPassword`: a strong password with uppercase, lowercase, number, and symbol.
    - `SeedUsers__UserPassword`: another strong password.
 4. Render generates `Jwt__Secret` automatically and deploys the Docker image.
-5. Open `/health` to verify the service and `/scalar/v1` to test the API.
+5. Open the [health endpoint](https://employee-management-api-kfpo.onrender.com/health) to verify the service and the [Scalar UI](https://employee-management-api-kfpo.onrender.com/scalar/v1) to test the API.
 
 Render supplies the `PORT` environment variable automatically. The API binds to that port in cloud environments while retaining the local launch-profile ports.
